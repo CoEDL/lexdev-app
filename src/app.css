@@ -1,0 +1,35 @@
+body {
+
+}
+
+h1, h2, h3 {
+	font-size: 1.5em;
+}
+
+button:focus {
+	outline:0 !important;
+}
+
+pre.editor {
+	margin: auto;
+	height: calc(100% - 100px);
+	width:  calc(100% - 20px);
+}
+
+#tab_grammar, #tab_data, #results-display {
+	height: calc(100% - 65px);
+}
+
+#results-display {
+	overflow: scroll;
+}
+
+#clear-results {
+	font-size: 12px;
+	margin-top: 10px;
+}
+
+#clear-results:hover {
+	color: grey;
+	cursor: pointer;
+}

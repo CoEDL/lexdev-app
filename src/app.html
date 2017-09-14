@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LexDev 0.0.1</title>
+
+	<link rel="stylesheet" type="text/css" href="dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="dist/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="app.css">
+</head>
+<body>
+
+<div class="container" style="height: 100vh;width: 100vw">
+	<div class="row" style="height:100%">
+		<div class="col-xs-8" style="height:100%; padding-top: 10px;">
+
+			View:
+			<div class="btn-group btn-group-sm" role="group">
+	  			<button type="button" class="btn btn-default" onClick="ux.show_grammar()">Grammar definition</button>
+	  			<button type="button" class="btn btn-default" onClick="ux.show_data()">Test data</button>
+			</div>
+
+			<div id="tab_grammar">
+				<h1>Nearley grammar</h1>
+					<p align="right">
+						<button type="button" class="btn btn-primary" id="compile_button">Compile grammar</button>
+					</p>
+		
+					<pre class="editor" id="grammar_editor"></pre>
+			</div>
+
+			<div id="tab_data" style="display: none">
+								<h1>Data</h1>
+		<p align="right">
+			<button type="button" class="btn btn-primary" id="data-test_button">Test data</button>
+		</p>
+
+		<pre class="editor" id="data_editor"></pre>
+			</div>
+
+		</div>
+
+		<div class="col-xs-4" style="height:100%">
+		
+			<h1>
+				Results
+
+				<span id="clear-results" class="glyphicon glyphicon-remove" aria-hidden="true" style="float:right"></span>
+			</h1>
+
+			<div id="results-display"></div>
+
+		</div>
+	</div>
+</div>
+
+	<!-- Insert this line above script imports  -->
+	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+	<!-- LiveReload -->
+	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+	<script type="text/javascript" src="dist/jquery-3.2.1.min.js"></script>
+
+	<script type="text/javascript" src="dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="dist/ace-1.2.8-src-min-noconflict/ace.js"></script>
+	<script type="text/javascript" src="dist/ace-1.2.8-src-min-noconflict/ext-searchbox.js"></script>
+
+	<script type="text/javascript" src="dist/nearley-2.11.5.js"></script>
+
+	<script type="text/javascript" src="app-helpers/ux.js"></script>
+	<script type="text/javascript" src="app-helpers/messaging.js"></script>
+
+	<!-- Insert this line after script imports  -->
+	<script>if (window.module) module = window.module;</script>
+
+</body>
+</html>

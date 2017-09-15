@@ -21,7 +21,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   var template = [{
         label: "Application",
@@ -42,16 +42,18 @@ function createWindow () {
         ]}, {
         label: "Grammar",
         submenu: [
-          { label: "Open Nearley grammar", accelerator: "CommandOrControl+Shift+1", click: function() { mainWindow.webContents.send('load-grammar', io.open_file_dialog() ) } },
+          { label: "Open Nearley grammar", accelerator: "CommandOrControl+Shift+1", click: function() { mainWindow.webContents.send('load-grammar', io.open_file_dialog(["ne"]) ) } },
           { label: "Show grammar", accelerator: "CommandOrControl+1", click: function() { mainWindow.webContents.executeJavaScript('ux.show_grammar()') } },
-          { label: "Compile grammar", accelerator: "CommandOrControl+B", click: function() { mainWindow.webContents.executeJavaScript('$("#compile-button").click()') } }
+          { label: "Compile grammar", accelerator: "CommandOrControl+B", click: function() { mainWindow.webContents.executeJavaScript('$("#compile_button").click()') } },
+          { label: "Save Nearley grammar", accelerator: "CommandOrControl+Alt+1", click: function() { mainWindow.webContents.executeJavaScript('messaging.save_file("grammar_editor")') } }
         ]},
         {
         label: "Data",
         submenu :[
-          { label: "Open data file", accelerator: "CommandOrControl+Shift+2", click: function() { mainWindow.webContents.send('load-data', io.open_file_dialog() ) }  },
+          { label: "Open data file", accelerator: "CommandOrControl+Shift+2", click: function() { mainWindow.webContents.send('load-data', io.open_file_dialog(["txt"]) ) }  },
           { label: "Show test data", accelerator: "CommandOrControl+2", click: function() { mainWindow.webContents.executeJavaScript('ux.show_data()') } },
-          { label: "Test data", accelerator: "CommandOrControl+T" }
+          { label: "Test data", accelerator: "CommandOrControl+T", click: function() { mainWindow.webContents.executeJavaScript('$("#data-test_button").click()') }  },
+          { label: "Save data file", accelerator: "CommandOrControl+Alt+2", click: function() { mainWindow.webContents.executeJavaScript('messaging.save_file("data_editor")') } }
         ]
         }
     ]
@@ -86,15 +88,72 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+const nearley = require('nearley')
+const compile = require("nearley/lib/compile")
+const generate = require("nearley/lib/generate")
+const nearleyGrammar = require("nearley/lib/nearley-language-bootstrapped")
+
 let compiled_grammar
 
-const nearleyer = require('./app-helpers/nearleyer')
-
 ipcMain.on('compile-grammar', function(event, grammar_string) {
-  console.log(grammar_string)
 
-  compiled_grammar = nearleyer(grammar_string)
+  const grammarParser = new nearley.Parser(nearleyGrammar);
 
-  event.returnValue = true
+  try {
+    grammarParser.feed(grammar_string);
+  } catch(parse_error) {
+    // slice(0, 6) omits source code location, e.g. "at nearley.js on line 1234"
+    error_msg = parse_error.stack.split(/\n/).slice(0, 6).join("<br />")
+
+    event.returnValue = { success: false, results: error_msg }
+    return
+  }
+
+  const grammarAst = grammarParser.results[0];
+  // Compile the AST into a set of rules
+  const grammarInfoObject = compile(grammarAst, {});
+  // Generate JavaScript code from the rules
+  const grammarJs = generate(grammarInfoObject, "grammar");
+  // Pretend this is a CommonJS environment to catch exports from the grammar.
+  const module = { exports: {} };
+  eval(grammarJs);
+
+  compiled_grammar = module.exports
+
+  console.log(compiled_grammar)
+
+  event.returnValue = { success: true }
+
+})
+
+ipcMain.on('test-data', function(event, data_string) {
+
+  var parser = new nearley.Parser(nearley.Grammar.fromCompiled(compiled_grammar), { "keepHistory" : true })
+
+  try {
+    parser.feed(data_string)
+  } catch(parse_error) {
+    // slice(0, 6) omits source code location, e.g. "at nearley.js on line 1234"
+    error_msg = parse_error.stack.split(/\n/).slice(0, 6).join("<br />")
+
+    event.returnValue = { success: false, results: error_msg }
+    return
+  }
+
+  event.returnValue = { success: true, results: parser.results[0] }
+
+})
+
+ipcMain.on('save-file', function(event, saving_object) {
+
+  let saving
+
+  if(saving_object.target_file != null) {
+    saving = io.save_file(saving_object)
+  } else {
+    saving = io.save_file_as_dialog(saving_object)
+  }
+
+  event.returnValue = saving
 
 })

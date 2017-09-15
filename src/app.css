@@ -24,6 +24,12 @@ pre.editor {
 	overflow: scroll;
 }
 
+#progress {
+	display: none;
+	margin: auto;
+	height: 5px;
+}
+
 #clear-results {
 	font-size: 12px;
 	margin-top: 10px;

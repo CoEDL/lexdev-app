@@ -2,11 +2,12 @@
   "name": "lexdev-app",
   "version": "0.0.1",
   "description": "A cross-platform app to help with lexicon development",
-  "main": "app/main.js",
+  "main": "src/main.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "build:osx" : "./node_modules/.bin/electron-packager src/main.js build/osx --platform=darwin",
     "start": "./node_modules/.bin/electron-repl src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +26,7 @@
   "homepage": "https://github.com/CoEDL/lexdev-app#readme",
   "devDependencies": {
     "electron": "^1.7.6",
+    "electron-packager": "^9.0.1",
     "electron-repl": "^1.0.1"
   },
   "dependencies": {

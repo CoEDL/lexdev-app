@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build:osx" : "./node_modules/.bin/electron-packager src/main.js build/osx --platform=darwin",
-    "start": "./node_modules/.bin/electron-repl src/main.js",
+    "start": "./node_modules/.bin/electron src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

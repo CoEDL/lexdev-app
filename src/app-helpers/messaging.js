@@ -35,6 +35,10 @@ messaging.compile_grammar = function(grammar_string) {
 	if(compiling.success) {
 		$("#data-test_button").removeClass('disabled')
 		ux.show_message("Grammar compiled!", "success")
+	} else if(compiling.success == null) {
+		$("#data-test_button").addClass('disabled')
+
+		ux.show_message('Compilation failed. Parse incomplete. <br /><br />' + linked_message, "danger")		
 	} else {
 		$("#data-test_button").addClass('disabled')
 

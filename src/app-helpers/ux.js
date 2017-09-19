@@ -53,8 +53,8 @@ ux.show_data = function() {
 
 ux.show_message = function(message, message_type = "info") {
 
-	var today = new Date();
-	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+	var today = new Date()
+	var time = [today.getHours(), today.getMinutes(), today.getSeconds()].map(x => x >= 10 ? x : "0" + x).join(':')
 
 	var close_button = '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
 	var alert_time   = '<p align="right">' + time + '</p>'

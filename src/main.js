@@ -97,8 +97,9 @@ let compiled_grammar
 
 ipcMain.on('compile-grammar', function(event, grammar_string) {
 
-  const grammarParser = new nearley.Parser(nearleyGrammar);
+  const grammarParser = new nearley.Parser(nearleyGrammar, { "keepHistory" : true });
 
+  // if parse failed
   try {
     grammarParser.feed(grammar_string);
   } catch(parse_error) {
@@ -106,6 +107,14 @@ ipcMain.on('compile-grammar', function(event, grammar_string) {
     error_msg = parse_error.stack.split(/\n/).slice(0, 6).join("<br />")
 
     event.returnValue = { success: false, results: error_msg }
+    return
+  }
+
+  // if parse incomplete
+  if (grammarParser.results.length == 0) {
+    parse_table = console.log(Object.keys(grammarParser.table.pop().wants))
+
+    event.returnValue = { success: null }
     return
   }
 

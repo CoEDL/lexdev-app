@@ -27,7 +27,10 @@ $("#data-test_button").hover(function () { if($(this).hasClass('disabled')) { $(
 $("#data-test_button").click(function() {
 	if(!$(this).hasClass('disabled')) {
 		$("#progress").fadeIn()
-		messaging.test_data(data_editor.session.getValue())
+
+		var test_data = data_editor.getSelectedText() != "" ? data_editor.getSelectedText() : data_editor.session.getValue()
+
+		messaging.test_data(test_data)
 	} else {
 		ux.show_message("Compile grammar to test the data", "warning")
 	}
